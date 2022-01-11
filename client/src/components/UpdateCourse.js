@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-const CreateCourse = () => {
-  // const [title, setTitle] = useState("");
-  // const [estimatedTime, setEstimatedTime] = useState("");
-  // const [description, setDescription] = useState("");
-  // const [materialsNeeded, setMaterialsNeeded] = useState("");
-
-  const [title, setTitle] = useState("rats 101");
+const UpdateCourse = () => {
+  const id = useParams().id;
+  const [title, setTitle] = useState("New Updated Title");
   const [estimatedTime, setEstimatedTime] = useState("20h");
-  const [description, setDescription] = useState("rats and queso");
+  const [description, setDescription] = useState("updated rats and queso");
   const [materialsNeeded, setMaterialsNeeded] = useState("chiss");
+  const [userId, setUserId] = useState("1");
 
-  function registerCourse() {
+  function updateCourse() {
     const json = JSON.stringify({
+      id,
       title,
       estimatedTime,
       description,
       materialsNeeded,
+      userId,
     });
     const headers = {
       "Content-Type": "application/json",
@@ -34,7 +33,7 @@ const CreateCourse = () => {
     console.log(json);
     // console.log(credentials);
     axios
-      .post(`http://127.0.0.1:5000/api/courses`, json, { headers })
+      .put(`http://127.0.0.1:5000/api/courses/${id}`, json, { headers })
       .catch((error) => {
         console.log("Error fetching and parsing data", error);
       });
@@ -42,7 +41,7 @@ const CreateCourse = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    registerCourse();
+    updateCourse();
     e.currentTarget.reset();
   }
   function handleTitleInput(e) {
@@ -61,14 +60,7 @@ const CreateCourse = () => {
   return (
     <main>
       <div className="wrap">
-        <h2>Create Course</h2>
-        {/* <div className="validation--errors">
-          <h3>Validation Errors</h3>
-          <ul>
-            <li>Please provide a value for "Title"</li>
-            <li>Please provide a value for "Description"</li>
-          </ul>
-        </div> */}
+        <h2>Update Course</h2>
         <form onSubmit={handleSubmit}>
           <div className="main--flex">
             <div>
@@ -88,7 +80,7 @@ const CreateCourse = () => {
                 onChange={handleDescriptionTextArea}
                 id="courseDescription"
                 name="courseDescription"
-              ></textarea>
+              />
             </div>
             <div>
               <label htmlFor="estimatedTime">Estimated Time</label>
@@ -105,11 +97,11 @@ const CreateCourse = () => {
                 onChange={handleMaterialsNeededTextArea}
                 id="materialsNeeded"
                 name="materialsNeeded"
-              ></textarea>
+              />
             </div>
           </div>
           <button className="button" type="submit">
-            Create Course
+            Update Course
           </button>
           <Link to="/">
             <button className="button button-secondary">Cancel</button>
@@ -120,4 +112,4 @@ const CreateCourse = () => {
   );
 };
 
-export default CreateCourse;
+export default UpdateCourse;

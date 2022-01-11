@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const UserSignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -84,16 +85,13 @@ const UserSignUp = () => {
           <button className="button" type="submit">
             Sign Up
           </button>
-          <button
-            className="button button-secondary"
-            // onClick="event.preventDefault(); location.href='index.html';"
-          >
-            Cancel
-          </button>
+          <Link to="/">
+            <button className="button button-secondary">Cancel</button>
+          </Link>
         </form>
         <p>
-          Already have a user account? Click here to{" "}
-          <a href="sign-in.html">sign in</a>!
+          Already have a user account? Click here to
+          <Link to="/signin"> sign in</Link>!
         </p>
       </div>
     </main>

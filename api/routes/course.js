@@ -23,7 +23,8 @@ router.all("/", function (req, res, next) {
 
 router.all("/:id", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, DELETE");
   next();
 });
 
@@ -83,6 +84,7 @@ router.post(
       console.log("ERROR: ", error.name);
       if (error.name === "SequelizeValidationError") {
         const errors = error.errors.map((err) => err.message);
+        console.log({ errors });
         res.status(400).json({ errors });
       } else {
         throw error;

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useParams } from "react-router-dom";
 
-const CourseDetail = (props) => {
-  const id = props.courseId;
+const CourseDetail = () => {
+  const id = useParams().id;
+
   const [course, setCourse] = useState({});
   const [courseUser, setCourseUser] = useState({});
 
@@ -22,21 +24,21 @@ const CourseDetail = (props) => {
       .catch((error) => {
         console.log("Error fetching and parsing data", error);
       });
-    }, []);
+  }, []);
 
   return (
     <main>
       <div className="actions--bar">
         <div className="wrap">
-          <a className="button" href="update-course.html">
+          <Link to={"/courses/" + course.id + "/update"} className="button">
             Update Course
-          </a>
+          </Link>
           <a className="button" href="#">
             Delete Course
           </a>
-          <a className="button button-secondary" href="index.html">
+          <Link to="/" className="button button-secondary">
             Return to List
-          </a>
+          </Link>
         </div>
       </div>
       <div className="wrap">
