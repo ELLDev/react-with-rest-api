@@ -13,6 +13,7 @@ const CourseDetail = () => {
   const [isCourseOwner, setIsCourseOwner] = useState(false);
 
   useEffect(() => {
+    console.log(data);
     const headers = {
       "Content-Type": "application/json",
     };

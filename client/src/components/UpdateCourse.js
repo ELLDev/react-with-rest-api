@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import axios from "axios";
 import { Context } from "../Context";
 import { useNavigate, Link, useParams } from "react-router-dom";
 
@@ -11,6 +12,24 @@ const UpdateCourse = () => {
   const { data, credentials } = useContext(Context);
   const navigate = useNavigate();
   const [err, setErr] = useState("");
+
+  useEffect(() => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    axios
+      .get(`http://127.0.0.1:5000/api/courses/${id}`, { headers })
+      .then((response) => {
+        setTitle(response.data.course.title);
+        setEstimatedTime(response.data.course.estimatedTime);
+        setDescription(response.data.course.description);
+        setMaterialsNeeded(response.data.course.materialsNeeded);
+      })
+      .catch((error) => {
+        console.log("Error fetching and parsing data", error);
+      });
+  }, []);
 
   function updateCourse() {
     const body = {
