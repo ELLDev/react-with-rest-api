@@ -1,41 +1,36 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Context } from "../Context";
+import { useNavigate, Link, useParams } from "react-router-dom";
 
 const UpdateCourse = () => {
   const id = useParams().id;
-  const [title, setTitle] = useState("New Updated Title");
-  const [estimatedTime, setEstimatedTime] = useState("20h");
-  const [description, setDescription] = useState("updated rats and queso");
-  const [materialsNeeded, setMaterialsNeeded] = useState("chiss");
-  const [userId, setUserId] = useState("1");
+  const [title, setTitle] = useState("");
+  const [estimatedTime, setEstimatedTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [materialsNeeded, setMaterialsNeeded] = useState("");
+  const { data, credentials } = useContext(Context);
+  const navigate = useNavigate();
+  const [err, setErr] = useState("");
 
   function updateCourse() {
-    const json = JSON.stringify({
+    const body = {
       id,
       title,
       estimatedTime,
       description,
       materialsNeeded,
-      userId,
-    });
-    const headers = {
-      "Content-Type": "application/json",
-      // Authorization: {
-      //   name: "joe@smith.com",
-      //   pass: "joepassword",
-      // },
     };
-    // const credentials = {
-    //   name: "joe@smith.com",
-    //   pass: "joepassword",
-    // };
-    console.log(json);
-    // console.log(credentials);
-    axios
-      .put(`http://127.0.0.1:5000/api/courses/${id}`, json, { headers })
+
+    data
+      .updateCourse("/courses/" + id, body, credentials)
+      .then(() => {
+        navigate("/courses/" + id);
+      })
       .catch((error) => {
-        console.log("Error fetching and parsing data", error);
+        const { status } = error.response;
+        if (status === 400) {
+          setErr(error.response.data.errors);
+        }
       });
   }
 
@@ -61,6 +56,18 @@ const UpdateCourse = () => {
     <main>
       <div className="wrap">
         <h2>Update Course</h2>
+
+        {err.length > 0 && (
+          <div className="validation--errors">
+            <h3>Validation Errors</h3>
+            <ul>
+              {err.map((x, i) => (
+                <li key={i}>{x}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="main--flex">
             <div>
@@ -70,7 +77,7 @@ const UpdateCourse = () => {
                 onChange={handleTitleInput}
                 id="courseTitle"
                 name="courseTitle"
-                defaultValue=""
+                value={title}
               />
 
               <p>By Author Name</p>
@@ -80,6 +87,7 @@ const UpdateCourse = () => {
                 onChange={handleDescriptionTextArea}
                 id="courseDescription"
                 name="courseDescription"
+                value={description}
               />
             </div>
             <div>
@@ -89,7 +97,7 @@ const UpdateCourse = () => {
                 onChange={handleEstimatedTimeInput}
                 id="estimatedTime"
                 name="estimatedTime"
-                defaultValue=""
+                value={estimatedTime}
               />
 
               <label htmlFor="materialsNeeded">Materials Needed</label>
@@ -97,6 +105,7 @@ const UpdateCourse = () => {
                 onChange={handleMaterialsNeededTextArea}
                 id="materialsNeeded"
                 name="materialsNeeded"
+                value={materialsNeeded}
               />
             </div>
           </div>

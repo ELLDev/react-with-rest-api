@@ -1,17 +1,56 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Context } from "../Context";
 
 const UserSignIn = () => {
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const { actions, authorizedUser } = useContext(Context);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authorizedUser) {
+      navigate("/");
+    }
+  });
+
+  function submit() {
+    const credentials = {
+      username: emailAddress,
+      password: password,
+    };
+    actions.signIn(credentials);
+
+    actions
+      .signIn(credentials)
+      .then(() => {
+        navigate(-1);
+      });
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    submit();
+  }
+
+  function handleEmailAddressInput(e) {
+    setEmailAddress(e.target.value);
+  }
+
+  function handlePasswordInput(e) {
+    setPassword(e.target.value);
+  }
   return (
     <main>
       <div className="form--centered">
         <h2>Sign In</h2>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <label htmlFor="emailAddress">Email Address</label>
           <input
-            id="emailAddress"
             type="email"
+            onChange={handleEmailAddressInput}
+            id="emailAddress"
             name="emailAddress"
             defaultValue=""
             required=""
@@ -19,8 +58,9 @@ const UserSignIn = () => {
 
           <label htmlFor="password">Password</label>
           <input
-            id="password"
             type="password"
+            onChange={handlePasswordInput}
+            id="password"
             name="password"
             defaultValue=""
           />

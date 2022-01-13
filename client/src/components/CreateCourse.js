@@ -1,42 +1,39 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Context } from "../Context";
+import { useNavigate, Link } from "react-router-dom";
 
 const CreateCourse = () => {
-  // const [title, setTitle] = useState("");
-  // const [estimatedTime, setEstimatedTime] = useState("");
-  // const [description, setDescription] = useState("");
-  // const [materialsNeeded, setMaterialsNeeded] = useState("");
-
-  const [title, setTitle] = useState("rats 101");
-  const [estimatedTime, setEstimatedTime] = useState("20h");
-  const [description, setDescription] = useState("rats and queso");
-  const [materialsNeeded, setMaterialsNeeded] = useState("chiss");
+  const [title, setTitle] = useState("");
+  const [estimatedTime, setEstimatedTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [materialsNeeded, setMaterialsNeeded] = useState("");
+  const [err, setErr] = useState([]);
+  let { data, credentials } = useContext(Context);
+  const navigate = useNavigate();
 
   function registerCourse() {
-    const json = JSON.stringify({
+    const body = {
       title,
       estimatedTime,
       description,
       materialsNeeded,
-    });
-    const headers = {
-      "Content-Type": "application/json",
-      // Authorization: {
-      //   name: "joe@smith.com",
-      //   pass: "joepassword",
-      // },
+      userId: localStorage.userId,
     };
-    // const credentials = {
-    //   name: "joe@smith.com",
-    //   pass: "joepassword",
-    // };
-    console.log(json);
-    // console.log(credentials);
-    axios
-      .post(`http://127.0.0.1:5000/api/courses`, json, { headers })
+    data
+      .createCourse("/courses", body, credentials)
+      .then(() => {
+        navigate("/courses/create");
+        setTitle("");
+        setEstimatedTime("");
+        setDescription("");
+        setMaterialsNeeded("");
+        setErr([]);
+      })
       .catch((error) => {
-        console.log("Error fetching and parsing data", error);
+        const { status } = error.response;
+        if (status === 400) {
+          setErr(error.response.data.errors);
+        }
       });
   }
 
@@ -62,13 +59,18 @@ const CreateCourse = () => {
     <main>
       <div className="wrap">
         <h2>Create Course</h2>
-        {/* <div className="validation--errors">
-          <h3>Validation Errors</h3>
-          <ul>
-            <li>Please provide a value for "Title"</li>
-            <li>Please provide a value for "Description"</li>
-          </ul>
-        </div> */}
+
+        {err.length > 0 && (
+          <div className="validation--errors">
+            <h3>Validation Errors</h3>
+            <ul>
+              {err.map((x, i) => (
+                <li key={i}>{x}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="main--flex">
             <div>
@@ -78,7 +80,7 @@ const CreateCourse = () => {
                 onChange={handleTitleInput}
                 id="courseTitle"
                 name="courseTitle"
-                defaultValue=""
+                value={title}
               />
 
               <p>By Author Name</p>
@@ -88,6 +90,7 @@ const CreateCourse = () => {
                 onChange={handleDescriptionTextArea}
                 id="courseDescription"
                 name="courseDescription"
+                value={description}
               ></textarea>
             </div>
             <div>
@@ -97,7 +100,7 @@ const CreateCourse = () => {
                 onChange={handleEstimatedTimeInput}
                 id="estimatedTime"
                 name="estimatedTime"
-                defaultValue=""
+                value={estimatedTime}
               />
 
               <label htmlFor="materialsNeeded">Materials Needed</label>
@@ -105,6 +108,7 @@ const CreateCourse = () => {
                 onChange={handleMaterialsNeededTextArea}
                 id="materialsNeeded"
                 name="materialsNeeded"
+                value={materialsNeeded}
               ></textarea>
             </div>
           </div>

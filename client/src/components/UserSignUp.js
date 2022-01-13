@@ -1,28 +1,40 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Context } from "../Context";
 
 const UserSignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState([]);
+  const { data, actions } = useContext(Context);
+  const navigate = useNavigate();
 
   function registerUser() {
-    const json = JSON.stringify({
+    const body = {
       firstName,
       lastName,
       emailAddress,
       password,
-    });
-    const headers = {
-      "Content-Type": "application/json",
     };
 
-    axios
-      .post(`http://127.0.0.1:5000/api/users`, json, { headers })
+    data
+      .createUser("/users", body)
+      .then(() => {
+        actions.signIn({
+          username: emailAddress,
+          password: password,
+        });
+      })
+      .then(() => {
+        navigate("/");
+      })
       .catch((error) => {
-        console.log("Error fetching and parsing data", error);
+        const { status } = error.response;
+        if (status === 400) {
+          setErr(error.response.data.errors);
+        }
       });
   }
 
@@ -49,6 +61,17 @@ const UserSignUp = () => {
       <div className="form--centered">
         <h2>Sign Up</h2>
 
+        {err.length > 0 && (
+          <div className="validation--errors">
+            <h3>Validation Errors</h3>
+            <ul>
+              {err.map((x, i) => (
+                <li key={i}>{x}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <label htmlFor="firstName">First Name</label>
           <input
@@ -56,7 +79,7 @@ const UserSignUp = () => {
             onChange={handleFirstName}
             id="firstName"
             name="firstName"
-            defaultValue=""
+            value={firstName}
           />
           <label htmlFor="lastName">Last Name</label>
           <input
@@ -64,7 +87,7 @@ const UserSignUp = () => {
             onChange={handleLastName}
             id="lastName"
             name="lastName"
-            defaultValue=""
+            value={lastName}
           />
           <label htmlFor="emailAddress">Email Address</label>
           <input
@@ -72,7 +95,7 @@ const UserSignUp = () => {
             onChange={handleEmailAddressInput}
             id="emailAddress"
             name="emailAddress"
-            defaultValue=""
+            value={emailAddress}
           />
           <label htmlFor="password">Password</label>
           <input
@@ -80,7 +103,7 @@ const UserSignUp = () => {
             onChange={handlePasswordInput}
             id="password"
             name="password"
-            defaultValue=""
+            value={password}
           />
           <button className="button" type="submit">
             Sign Up

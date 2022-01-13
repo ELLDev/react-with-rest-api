@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { Context } from "../Context";
+import ReactMarkDown from "react-markdown";
 
 const CourseDetail = () => {
   const id = useParams().id;
-
+  const { data, credentials } = useContext(Context);
+  const navigate = useNavigate();
   const [course, setCourse] = useState({});
   const [courseUser, setCourseUser] = useState({});
+  const [isCourseOwner, setIsCourseOwner] = useState(false);
 
   useEffect(() => {
-    console.log(course);
-
     const headers = {
       "Content-Type": "application/json",
     };
@@ -20,22 +22,35 @@ const CourseDetail = () => {
       .then((response) => {
         setCourse(response.data.course);
         setCourseUser(response.data.course.users);
+        if (response.data.course.users.id === parseInt(localStorage.userId)) {
+          setIsCourseOwner(true);
+        }
       })
       .catch((error) => {
         console.log("Error fetching and parsing data", error);
       });
-  }, []);
+  }, [id]);
+
+  const deleteCourse = () => {
+    data.deleteCourse("/courses/" + id, credentials).then(() => {
+      navigate("/");
+    });
+  };
 
   return (
     <main>
       <div className="actions--bar">
         <div className="wrap">
-          <Link to={"/courses/" + course.id + "/update"} className="button">
-            Update Course
-          </Link>
-          <a className="button" href="#">
-            Delete Course
-          </a>
+          {isCourseOwner && (
+            <>
+              <Link to={"/courses/" + course.id + "/update"} className="button">
+                Update Course
+              </Link>
+              <button className="button" onClick={deleteCourse}>
+                Delete Course
+              </button>
+            </>
+          )}
           <Link to="/" className="button button-secondary">
             Return to List
           </Link>
@@ -51,7 +66,7 @@ const CourseDetail = () => {
               <p>
                 By {courseUser.firstName} {courseUser.lastName}
               </p>
-              <p>{course.description}</p>
+              <ReactMarkDown>{course.description}</ReactMarkDown>
             </div>
             <div>
               <h3 className="course--detail--title">Estimated Time</h3>
@@ -59,17 +74,7 @@ const CourseDetail = () => {
 
               <h3 className="course--detail--title">Materials Needed</h3>
               <ul className="course--detail--list">
-                {course.materialsNeeded}
-                {/* <li>1/2 x 3/4 inch parting strip</li>
-            <li>1 x 2 common pine</li>
-            <li>1 x 4 common pine</li>
-            <li>1 x 10 common pine</li>
-            <li>1/4 inch thick lauan plywood</li>
-            <li>Finishing Nails</li>
-            <li>Sandpaper</li>
-            <li>Wood Glue</li>
-            <li>Wood Filler</li>
-            <li>Minwax Oil Based Polyurethane</li> */}
+                <ReactMarkDown>{course.materialsNeeded}</ReactMarkDown>
               </ul>
             </div>
           </div>

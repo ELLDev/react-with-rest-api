@@ -26,7 +26,9 @@ router.get(
   asyncHandler(async (req, res) => {
     let user;
     try {
-      user = req.currentUser;
+      user = await User.findOne({
+        where: { emailAddress: req.loggedUser.emailAddress },
+      });
       res.status(200).send(user);
     } catch (error) {
       res.status(400).send(error);
@@ -40,13 +42,13 @@ router.post(
     let user;
     try {
       user = await User.create(req.body);
-      // console.log(req.body);
       res.location("/");
       res.status(201).end();
     } catch (error) {
       console.log("ERROR: ", error.name);
       if (error.name === "SequelizeValidationError") {
         const errors = error.errors.map((err) => err.message);
+        console.log({errors});
         res.status(400).json({ errors });
       } else {
         throw error;
