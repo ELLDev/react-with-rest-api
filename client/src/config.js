@@ -1,2 +1,4 @@
-const apiBaseUrl = "http://127.0.0.1:5000/api";
+// const PORT = process.env.PORT || 5000;
+// const apiBaseUrl = window.location.origin + ":" + PORT + "/api";
+const apiBaseUrl = window.location.origin + "/api";
 export default apiBaseUrl;
