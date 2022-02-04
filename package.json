@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "description": "This is a course management app.",
   "scripts": {
-    "start": "cd api && npm install && npm start",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "start": "cd client && npm install && npm run build"
   },
   "keywords": [
     "react",
