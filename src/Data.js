@@ -1,4 +1,3 @@
-import apiBaseUrl from "./config";
 import axios from "axios";
 
 export default class Data {
@@ -13,7 +12,7 @@ export default class Data {
       method,
       url,
       params: null,
-      baseURL: apiBaseUrl,
+      baseURL: "https://course-management-rest-api.herokuapp.com/api",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
