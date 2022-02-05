@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { Context } from "../Context";
 import ReactMarkDown from "react-markdown";
+import apiBaseUrl from "./config";
 
 const CourseDetail = () => {
   const id = useParams().id;
@@ -18,7 +19,7 @@ const CourseDetail = () => {
     };
 
     axios
-      .get(`http://127.0.0.1:5000/api/courses/${id}`, { headers })
+      .get(`${apiBaseUrl}/courses/${id}`, { headers })
       .then((response) => {
         setCourse(response.data.course);
         setCourseUser(response.data.course.users);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import apiBaseUrl from "./config";
 
 const Courses = () => {
   const [coursesData, setCoursesData] = useState([]);
@@ -11,7 +12,7 @@ const Courses = () => {
     };
 
     axios
-      .get(`http://127.0.0.1:5000/api/courses`, { headers })
+      .get(`${apiBaseUrl}/courses`, { headers })
       .then((response) => {
         setCoursesData(response.data.courses);
       })

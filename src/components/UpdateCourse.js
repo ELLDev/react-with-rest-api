@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Context } from "../Context";
 import { useNavigate, Link, useParams } from "react-router-dom";
+import apiBaseUrl from "./config";
 
 const UpdateCourse = () => {
   const id = useParams().id;
@@ -19,7 +20,7 @@ const UpdateCourse = () => {
     };
 
     axios
-      .get(`http://127.0.0.1:5000/api/courses/${id}`, { headers })
+      .get(`${apiBaseUrl}/courses/${id}`, { headers })
       .then((response) => {
         setTitle(response.data.course.title);
         setEstimatedTime(response.data.course.estimatedTime);
