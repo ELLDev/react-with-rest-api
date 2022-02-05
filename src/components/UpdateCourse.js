@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Context } from "../Context";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import apiBaseUrl from "./config";
 
 const UpdateCourse = () => {
   const id = useParams().id;
@@ -20,7 +19,7 @@ const UpdateCourse = () => {
     };
 
     axios
-      .get(`${apiBaseUrl}/courses/${id}`, { headers })
+      .get(`https://course-management-rest-api.herokuapp.com/api/courses/${id}`, { headers })
       .then((response) => {
         setTitle(response.data.course.title);
         setEstimatedTime(response.data.course.estimatedTime);

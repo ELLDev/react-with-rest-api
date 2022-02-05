@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { Context } from "../Context";
 import ReactMarkDown from "react-markdown";
-import apiBaseUrl from "./config";
 
 const CourseDetail = () => {
   const id = useParams().id;
@@ -19,7 +18,7 @@ const CourseDetail = () => {
     };
 
     axios
-      .get(`${apiBaseUrl}/courses/${id}`, { headers })
+      .get(`https://course-management-rest-api.herokuapp.com/api/courses/${id}`, { headers })
       .then((response) => {
         setCourse(response.data.course);
         setCourseUser(response.data.course.users);

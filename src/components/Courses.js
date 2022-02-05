@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import apiBaseUrl from "./config";
 
 const Courses = () => {
   const [coursesData, setCoursesData] = useState([]);
@@ -12,7 +11,7 @@ const Courses = () => {
     };
 
     axios
-      .get(`${apiBaseUrl}/courses`, { headers })
+      .get(`https://course-management-rest-api.herokuapp.com/api/courses`, { headers })
       .then((response) => {
         setCoursesData(response.data.courses);
       })
